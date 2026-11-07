@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Tracker — Senator Dandutse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gd:  #0D3B2E;
+      --ge:  #1A6B4A;
+      --gb:  #2ECC71;
+      --red: #C0392B;
+      --bl:  #2980B9;
+      --gl:  #D4AF37;
+      --pu:  #8E44AD;
+      --wh:  #FFFFFF;
+      --ow:  #F8FAF9;
+      --bdr: #E0EBE5;
+      --fd:  #0A1F16;
+      --td:  #0D1F17;
+      --tm:  #6B8C7A;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--ow);
+      color: var(--td);
+      min-width: 0;
+    }
+
+    .ph { font-family: 'Playfair Display', serif; font-weight: 700; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .bc { color: #fff; background: var(--ge); }
+    .bo { color: #fff; background: var(--bl); }
+    .bp { color: var(--gd); background: var(--gl); }
+
+    /* ── Sector pill ── */
+    .sector-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 100px;
+      border: 1px solid;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* ── Progress bar ── */
+    .pt { height: 8px; background: var(--bdr); border-radius: 100px; overflow: hidden; }
+    .pf { height: 100%; background: var(--gb); border-radius: 100px; }
+
+    /* ════════════════════════════════════════
+       S1 — NAV
+    ════════════════════════════════════════ */
+    .nav {
+      height: 72px;
+      background: var(--gd);
+      border-bottom: 1px solid var(--gl);
+      display: flex;
+      align-items: center;
+      padding: 0 80px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-breadcrumb { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .bc-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,.60);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .bc-link:hover { color: #fff; }
+    .bc-sep { color: rgba(255,255,255,.30); font-size: 13px; margin: 0 2px; }
+    .bc-current { font-size: 13px; font-weight: 600; color: #fff; }
+
+    .nav-center { flex: 1; text-align: center; }
+    .nav-title  { font-size: 22px; color: #fff; }
+
+    .nav-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-id-wrap { display: flex; align-items: center; gap: 8px; }
+    .nav-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ge);
+      border: 2px solid var(--gl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .nav-senator { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); }
+    .nav-cta {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      height: 38px;
+      padding: 0 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .nav-cta:hover { opacity: .88; }
+
+    /* ════════════════════════════════════════
+       S2 — FILTER BAR
+    ════════════════════════════════════════ */
+    .filters {
+      background: var(--wh);
+      border-bottom: 1px solid var(--bdr);
+      padding: 0 80px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .filter-group { display: flex; gap: 10px; align-items: center; }
+
+    .filter-select {
+      height: 44px;
+      width: 164px;
+      border: 1px solid var(--bdr);
+      border-radius: 100px;
+      padding: 0 36px 0 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--td);
+      background: var(--wh) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B8C7A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;
+      appearance: none;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .filter-select:focus { border-color: var(--ge); }
+
+    .filter-search-wrap { position: relative; margin-left: auto; }
+    .filter-search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--tm);
+      pointer-events: none;
+    }
+    .filter-search-input {
+      width: 280px;
+      height: 44px;
+      border: 1px solid var(--bdr);
+      border-radius: 100px;
+      padding: 0 16px 0 40px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--td);
+      outline: none;
+      transition: border-color 0.15s;
+      background: var(--wh);
+    }
+    .filter-search-input::placeholder { color: var(--tm); }
+    .filter-search-input:focus { border-color: var(--ge); }
+
+    /* active filter pills row */
+    .filter-pills-bar {
+      background: var(--wh);
+      padding: 8px 80px 10px;
+      border-bottom: 1px solid var(--bdr);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .pills-label { font-size: 12px; font-weight: 500; color: var(--tm); }
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #E8F5EE;
+      color: var(--ge);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .filter-pill:hover { background: #d4ecdc; }
+    .filter-pill-x { font-size: 14px; line-height: 1; font-weight: 400; }
+
+    /* ════════════════════════════════════════
+       S3 — METRICS
+    ════════════════════════════════════════ */
+    .metrics { background: var(--ow); padding: 36px 80px; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+    .mc {
+      background: var(--wh);
+      border: 1px solid var(--bdr);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mc-icon { 
+      width: 40px; 
+      height: 40px; 
+      border-radius: 10px; 
+      margin-bottom: 12px; 
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .mc-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .10em; color: var(--tm); }
+    .mc-num   { font-size: 48px; line-height: 1; margin-top: 4px; }
+    .mc-sub   { font-size: 12px; color: var(--tm); margin-top: 4px; }
+    .mc-foot  { font-size: 12px; font-weight: 500; margin-top: 10px; display: flex; align-items: center; gap: 5px; }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bl);
+      animation: pulse 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .4; transform: scale(.65); }
+    }
+
+    /* ════════════════════════════════════════
+       S4 — MAIN CONTENT
+    ════════════════════════════════════════ */
+    .main { padding: 28px 80px 80px; display: flex; gap: 24px; align-items: flex-start; }
+    .col-left  { flex: 65; min-width: 0; }
+    .col-right { flex: 35; min-width: 0; position: sticky; top: 72px; }
+
+    /* ── List header ── */
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .list-title-wrap { display: flex; align-items: center; gap: 10px; }
+    .list-title { font-size: 22px; color: var(--td); }
+    .count-badge {
+      background: #E8F5EE;
+      color: var(--ge);
+      border-radius: 100px;
+      padding: 3px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .sort-label { font-size: 13px; font-weight: 500; color: var(--tm); cursor: pointer; }
+
+    /* ── Project card ── */
+    .pc {
+      background: var(--wh);
+      border: 1px solid var(--bdr);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 10px;
+    }
+    .pc-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .pc-name { font-size: 16px; font-weight: 600; color: var(--td); }
+    .pc-row2 { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .pc-loc  { font-size: 13px; color: var(--tm); display: flex; align-items: center; gap: 4px; }
+    .pc-dot  { color: var(--bdr); font-size: 10px; }
+    .pc-date { font-size: 12px; color: var(--tm); }
+    .pc-prog-label { font-size: 12px; font-weight: 500; color: var(--tm); margin-bottom: 6px; }
+    .pc-prog-row   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .pc-prog-bar   { flex: 1; height: 8px; background: var(--bdr); border-radius: 100px; overflow: hidden; }
+    .pc-prog-fill  { height: 100%; background: var(--gb); border-radius: 100px; }
+    .pc-pct  { font-size: 13px; font-weight: 700; color: var(--gd); width: 36px; text-align: right; flex-shrink: 0; }
+    .pc-row4 { display: flex; align-items: center; justify-content: space-between; }
+    .pc-expected { font-size: 12px; color: var(--tm); }
+    .pc-link { font-size: 13px; font-weight: 600; color: var(--ge); text-decoration: none; cursor: pointer; }
+    .pc-link:hover { text-decoration: underline; }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 24px;
+    }
+    .pag-btn {
+      min-width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--bdr);
+      background: var(--wh);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--td);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      transition: all 0.15s;
+    }
+    .pag-btn:hover:not(.on) { border-color: var(--ge); color: var(--ge); }
+    .pag-btn.on { background: var(--ge); color: #fff; border-color: var(--ge); }
+    .pag-btn.nav-pag { color: var(--tm); }
+    .pag-ellipsis { color: var(--tm); font-size: 13px; padding: 0 4px; }
+
+    /* ════════════════════════════════════════
+       RIGHT PANELS
+    ════════════════════════════════════════ */
+    .panel {
+      background: var(--wh);
+      border: 1px solid var(--bdr);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .panel + .panel { margin-top: 16px; }
+    .panel-title { font-size: 16px; font-weight: 600; color: var(--td); margin-bottom: 18px; }
+
+    /* Sector chart */
+    .sector-row { display: flex; align-items: center; gap: 8px; margin-bottom: 13px; }
+    .sector-row:last-child { margin-bottom: 0; }
+    .sector-name  { font-size: 13px; font-weight: 500; color: var(--td); width: 104px; flex-shrink: 0; }
+    .sector-bar-wrap { flex: 1; height: 6px; background: var(--bdr); border-radius: 100px; overflow: hidden; }
+    .sector-bar-fill { height: 100%; border-radius: 100px; }
+    .sector-count { font-size: 12px; font-weight: 600; width: 24px; text-align: right; flex-shrink: 0; }
+
+    /* Feedback rows */
+    .fb-row { padding: 12px 0; border-bottom: 1px solid var(--bdr); }
+    .fb-row:last-child { border-bottom: none; }
+    .fb-top  { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .fb-title { font-size: 13px; font-weight: 500; color: var(--td); flex: 1; }
+    .fb-meta  { font-size: 11px; color: var(--tm); }
+    .panel-link {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ge);
+      text-decoration: none;
+      text-align: right;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+    .panel-link:hover { text-decoration: underline; }
+
+    /* Export buttons */
+    .export-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.15s;
+      margin-bottom: 10px;
+    }
+    .export-btn:last-of-type { margin-bottom: 0; }
+    .export-btn:hover { opacity: .88; }
+    .export-dark    { background: var(--gd); color: #fff; border: none; }
+    .export-outline { background: transparent; border: 1px solid var(--bdr); color: var(--td); }
+    .export-note { font-size: 11px; color: var(--tm); text-align: center; margin-top: 8px; }
+
+    .mobile-filter-toggle {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        min-width: 0;
+        overflow-x: hidden;
+      }
+
+      .nav {
+        height: auto;
+        min-height: 64px;
+        padding: 12px 24px;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .nav-breadcrumb {
+        order: 1;
+      }
+
+      .bc-sep,
+      .bc-current,
+      .nav-id-wrap,
+      .nav-cta {
+        display: none;
+      }
+
+      .bc-link {
+        color: #fff;
+        font-size: 20px;
+      }
+
+      .nav-center {
+        order: 2;
+        flex: 1;
+        text-align: left;
+      }
+
+      .nav-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .nav-right {
+        order: 3;
+      }
+
+      .mobile-filter-toggle {
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.14);
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .filters {
+        height: auto;
+        padding: 16px 0 16px 24px;
+        display: block;
+        overflow: hidden;
+      }
+
+      .filter-group {
+        overflow-x: auto;
+        padding-right: 24px;
+        margin-bottom: 12px;
+        scrollbar-width: none;
+      }
+
+      .filter-group::-webkit-scrollbar {
+        display: none;
+      }
+
+      .filter-select {
+        width: auto;
+        min-width: 132px;
+        height: 38px;
+        flex: 0 0 auto;
+        font-size: 13px;
+        padding-left: 14px;
+      }
+
+      .filter-search-wrap {
+        margin-left: 0;
+        margin-right: 24px;
+      }
+
+      .filter-search-input {
+        width: 100%;
+        height: 48px;
+      }
+
+      .filter-pills-bar {
+        padding: 10px 24px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .filter-pills-bar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .pills-label {
+        display: none;
+      }
+
+      .metrics {
+        padding: 20px 24px;
+      }
+
+      .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .mc {
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+      .mc-icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+
+      .mc-label {
+        font-size: 10px;
+      }
+
+      .mc-num {
+        font-size: clamp(34px, 11vw, 42px);
+      }
+
+      .mc-foot {
+        display: none;
+      }
+
+      .main {
+        display: block;
+        padding: 0 24px 48px;
+      }
+
+      .col-left,
+      .col-right {
+        width: 100%;
+      }
+
+      .col-right {
+        position: static;
+        margin-top: 28px;
+      }
+
+      .list-header {
+        padding: 20px 0 4px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .list-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .pc {
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      .pc-row1,
+      .pc-row4 {
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .pc-row4 {
+        flex-direction: column;
+      }
+
+      .pc-name {
+        font-size: 15px;
+      }
+
+      .sector-pill,
+      .pc-date,
+      .pc-expected {
+        font-size: 11px;
+      }
+
+      .pagination {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+      }
+
+      .panel {
+        border-radius: 20px;
+        padding: 22px;
+      }
+
+      .sector-name {
+        width: 88px;
+      }
+
+      .export-btn {
+        height: 52px;
+        font-size: 14px;
+      }
+    }
+
+    @media (min-width: 901px) and (max-width: 1200px) {
+      body {
+        min-width: 0;
+      }
+
+      .nav,
+      .filters,
+      .filter-pills-bar,
+      .metrics,
+      .main {
+        padding-left: 40px;
+        padding-right: 40px;
+      }
+
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .main {
+        display: block;
+      }
+
+      .col-right {
+        position: static;
+        margin-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── S1 — NAV ── -->
+<nav class="nav" aria-label="Dashboard navigation">
+  <div class="nav-breadcrumb">
+    <a class="bc-link" href="index.html">&#8592; Home</a>
+    <span class="bc-sep">/</span>
+    <span class="bc-current">Constituency Dashboard</span>
+  </div>
+  <div class="nav-center">
+    <div class="ph nav-title">Project Tracker</div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-id-wrap">
+      <div class="nav-badge" aria-hidden="true">SDM</div>
+      <span class="nav-senator">Senator Dandutse</span>
+    </div>
+    <button class="nav-cta">Submit Feedback</button>
+    <button class="mobile-filter-toggle" type="button" aria-label="Jump to filters">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+        <line x1="11" y1="18" x2="13" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── S2 — FILTER BAR ── -->
+<div class="filters" role="search" aria-label="Filter projects">
+  <div class="filter-group">
+    <select class="filter-select" aria-label="Filter by LGA" id="filter-lga">
+      <option value="">All LGAs</option>
+      <option>Funtua</option>
+      <option>Dandume</option>
+      <option>Bakori</option>
+      <option>Malumfashi</option>
+      <option>Kafur</option>
+      <option>Faskari</option>
+      <option>Sabuwa</option>
+      <option>Kankara</option>
+      <option>Musawa</option>
+      <option>Danja</option>
+      <option>Matazu</option>
+    </select>
+    <select class="filter-select" aria-label="Filter by sector" id="filter-sector">
+      <option value="">All Sectors</option>
+      <option>Education</option>
+      <option>Infrastructure</option>
+      <option>Healthcare</option>
+      <option>Security</option>
+      <option>Agriculture</option>
+      <option>Youth</option>
+    </select>
+    <select class="filter-select" aria-label="Filter by status" id="filter-status">
+      <option value="">All Statuses</option>
+      <option>Completed</option>
+      <option>Ongoing</option>
+      <option>Pending</option>
+    </select>
+    <select class="filter-select" aria-label="Sort projects" id="filter-sort">
+      <option>Latest First</option>
+      <option>Oldest First</option>
+      <option>A &mdash; Z</option>
+      <option>% Complete</option>
+    </select>
+  </div>
+  <div class="filter-search-wrap">
+    <span class="filter-search-icon" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input class="filter-search-input" type="search" id="search-input" placeholder="Search projects&hellip;" aria-label="Search projects" />
+  </div>
+</div>
+
+<!-- active filter pills -->
+<div class="filter-pills-bar" id="pills-bar">
+  <span class="pills-label">Active filters:</span>
+  <div class="filter-pill" data-pill="Bakori LGA">Bakori LGA <span class="filter-pill-x">&times;</span></div>
+  <div class="filter-pill" data-pill="Education">Education <span class="filter-pill-x">&times;</span></div>
+  <div class="filter-pill" data-pill="Ongoing">Ongoing <span class="filter-pill-x">&times;</span></div>
+</div>
+
+<!-- ── S3 — METRICS ── -->
+<div class="metrics" role="region" aria-label="Project summary">
+  <div class="metrics-grid">
+
+    <div class="mc" style="border-left:4px solid var(--gd);">
+      <div class="mc-icon" style="background:#E8F5EE; color: var(--gd);" aria-hidden="true">📊</div>
+      <div class="mc-label">Total Projects</div>
+      <div class="ph mc-num" style="color:var(--gd);">120</div>
+      <div class="mc-sub">Across all 11 LGAs</div>
+    </div>
+
+    <div class="mc" style="border-left:4px solid var(--ge);">
+      <div class="mc-icon" style="background:#E8F5EE; color: var(--ge);" aria-hidden="true">✅</div>
+      <div class="mc-label">Completed</div>
+      <div class="ph mc-num" style="color:var(--ge);">45</div>
+      <div class="mc-sub">37.5% of all projects</div>
+      <div class="mc-foot" style="color:var(--ge);">&#8593; Delivering</div>
+    </div>
+
+    <div class="mc" style="border-left:4px solid var(--bl);">
+      <div class="mc-icon" style="background:#EBF5FB; color: var(--bl);" aria-hidden="true">🏗️</div>
+      <div class="mc-label">Ongoing</div>
+      <div class="ph mc-num" style="color:var(--bl);">60</div>
+      <div class="mc-sub">50% currently active</div>
+      <div class="mc-foot" style="color:var(--bl);"><span class="pulse-dot" aria-hidden="true"></span> In Progress</div>
+    </div>
+
+    <div class="mc" style="border-left:4px solid var(--red);">
+      <div class="mc-icon" style="background:#FDECEA; color: var(--red);" aria-hidden="true">⏳</div>
+      <div class="mc-label">Pending</div>
+      <div class="ph mc-num" style="color:var(--red);">15</div>
+      <div class="mc-sub">12.5% awaiting start</div>
+      <div class="mc-foot" style="color:var(--red);">Scheduled</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── S4 — MAIN CONTENT ── -->
+<div class="main">
+
+  <!-- ── LEFT: PROJECT LIST ── -->
+  <div class="col-left">
+    <div class="list-header">
+      <div class="list-title-wrap">
+        <div class="ph list-title">All Projects</div>
+        <span class="count-badge">120 total</span>
+      </div>
+      <span class="sort-label">Latest First &#9660;</span>
+    </div>
+
+    <!-- Project 1 -->
+    <article class="pc" style="border-left:4px solid var(--ge);" data-name="vocational centre musawa">
+      <div class="pc-row1">
+        <div class="pc-name">Vocational Centre &mdash; Musawa LGA</div>
+        <span class="badge bc">Completed</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Musawa LGA</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--ge);border-color:rgba(26,107,74,.25);background:#E8F5EE;">Education</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">Started Jan 2024</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:100%;"></div></div>
+        <span class="pc-pct">100%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Completed Dec 2024</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Project 2 -->
+    <article class="pc" style="border-left:4px solid var(--ge);" data-name="community library malumfashi">
+      <div class="pc-row1">
+        <div class="pc-name">Community Library &mdash; Malumfashi</div>
+        <span class="badge bc">Completed</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Malumfashi LGA</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--ge);border-color:rgba(26,107,74,.25);background:#E8F5EE;">Education</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">Started Feb 2024</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:100%;"></div></div>
+        <span class="pc-pct">100%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Completed Nov 2024</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Project 3 -->
+    <article class="pc" style="border-left:4px solid var(--bl);" data-name="bakori earth dam phase 2">
+      <div class="pc-row1">
+        <div class="pc-name">Bakori Earth Dam &mdash; Phase 2</div>
+        <span class="badge bo">Ongoing</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Bakori LGA</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--bl);border-color:rgba(41,128,185,.25);background:#EBF5FB;">Infrastructure</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">Started Mar 2024</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:40%;"></div></div>
+        <span class="pc-pct">40%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Expected: Dec 2026</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Project 4 -->
+    <article class="pc" style="border-left:4px solid var(--red);" data-name="kankara police station rehabilitation">
+      <div class="pc-row1">
+        <div class="pc-name">Kankara Police Station Rehabilitation</div>
+        <span class="badge bc">Completed</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Kankara LGA</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--red);border-color:rgba(192,57,43,.25);background:#FDECEA;">Security</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">Started Jun 2024</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:100%;"></div></div>
+        <span class="pc-pct">100%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Completed Sep 2024</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Project 5 -->
+    <article class="pc" style="border-left:4px solid var(--ge);" data-name="classrooms yargauta school bakori">
+      <div class="pc-row1">
+        <div class="pc-name">Classrooms &mdash; Yargauta School</div>
+        <span class="badge bo">Ongoing</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Bakori LGA &mdash; Tsiga Ward</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--ge);border-color:rgba(26,107,74,.25);background:#E8F5EE;">Education</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">Started Sep 2024</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:55%;"></div></div>
+        <span class="pc-pct">55%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Expected: June 2026</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Project 6 -->
+    <article class="pc" style="border-left:4px solid var(--red);" data-name="modern area command malumfashi security">
+      <div class="pc-row1">
+        <div class="pc-name">Modern Area Command &mdash; Malumfashi</div>
+        <span class="badge bc">Completed</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Malumfashi LGA</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--red);border-color:rgba(192,57,43,.25);background:#FDECEA;">Security</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">Started May 2024</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:100%;"></div></div>
+        <span class="pc-pct">100%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Completed Aug 2024</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Project 7 -->
+    <article class="pc" style="border-left:4px solid var(--gl);" data-name="ict centres 8 lgas education youth">
+      <div class="pc-row1">
+        <div class="pc-name">ICT Centres &mdash; 8 LGAs</div>
+        <span class="badge bp">Pending</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Multiple LGAs</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--ge);border-color:rgba(26,107,74,.25);background:#E8F5EE;">Education</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">TBC</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:0%;"></div></div>
+        <span class="pc-pct">0%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Expected: TBC</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Project 8 -->
+    <article class="pc" style="border-left:4px solid var(--red);" data-name="comprehensive hospital funtua healthcare">
+      <div class="pc-row1">
+        <div class="pc-name">Comprehensive Hospital &mdash; Funtua</div>
+        <span class="badge bp">Pending</span>
+      </div>
+      <div class="pc-row2">
+        <span class="pc-loc">&#128205; Funtua LGA</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="sector-pill" style="color:var(--red);border-color:rgba(192,57,43,.25);background:#FDECEA;">Healthcare</span>
+        <span class="pc-dot">&bull;</span>
+        <span class="pc-date">TBC</span>
+      </div>
+      <div class="pc-prog-label">Progress</div>
+      <div class="pc-prog-row">
+        <div class="pc-prog-bar"><div class="pc-prog-fill" style="width:0%;"></div></div>
+        <span class="pc-pct">0%</span>
+      </div>
+      <div class="pc-row4">
+        <span class="pc-expected">Expected: TBC</span>
+        <a class="pc-link" href="project-detail.html">View Details &#8594;</a>
+      </div>
+    </article>
+
+    <!-- Pagination -->
+    <nav class="pagination" aria-label="Project pages">
+      <button class="pag-btn nav-pag" aria-label="Previous page" disabled>&#8592; Prev</button>
+      <button class="pag-btn on" aria-current="page" aria-label="Page 1">1</button>
+      <button class="pag-btn" aria-label="Page 2">2</button>
+      <button class="pag-btn" aria-label="Page 3">3</button>
+      <span class="pag-ellipsis" aria-hidden="true">&hellip;</span>
+      <button class="pag-btn" aria-label="Page 12">12</button>
+      <button class="pag-btn nav-pag" aria-label="Next page">Next &#8594;</button>
+    </nav>
+  </div>
+
+  <!-- ── RIGHT: SIDE PANELS ── -->
+  <div class="col-right" role="complementary" aria-label="Dashboard panels">
+
+    <!-- PANEL 1: Sector Breakdown -->
+    <div class="panel" style="border-left:4px solid var(--ge);">
+      <div class="panel-title">Projects by Sector</div>
+      <div class="sector-row">
+        <span class="sector-name">Education</span>
+        <div class="sector-bar-wrap"><div class="sector-bar-fill" style="width:100%;background:var(--ge);"></div></div>
+        <span class="sector-count" style="color:var(--ge);">48</span>
+      </div>
+      <div class="sector-row">
+        <span class="sector-name">Infrastructure</span>
+        <div class="sector-bar-wrap"><div class="sector-bar-fill" style="width:67%;background:var(--bl);"></div></div>
+        <span class="sector-count" style="color:var(--bl);">32</span>
+      </div>
+      <div class="sector-row">
+        <span class="sector-name">Security</span>
+        <div class="sector-bar-wrap"><div class="sector-bar-fill" style="width:38%;background:var(--red);"></div></div>
+        <span class="sector-count" style="color:var(--red);">18</span>
+      </div>
+      <div class="sector-row">
+        <span class="sector-name">Healthcare</span>
+        <div class="sector-bar-wrap"><div class="sector-bar-fill" style="width:21%;background:var(--red);"></div></div>
+        <span class="sector-count" style="color:var(--red);">10</span>
+      </div>
+      <div class="sector-row">
+        <span class="sector-name">Agriculture</span>
+        <div class="sector-bar-wrap"><div class="sector-bar-fill" style="width:17%;background:var(--gl);"></div></div>
+        <span class="sector-count" style="color:var(--gl);">8</span>
+      </div>
+      <div class="sector-row">
+        <span class="sector-name">Youth</span>
+        <div class="sector-bar-wrap"><div class="sector-bar-fill" style="width:8%;background:var(--pu);"></div></div>
+        <span class="sector-count" style="color:var(--pu);">4</span>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Constituent Feedback -->
+    <div class="panel" style="border-left:4px solid var(--red); margin-top:16px;">
+      <div class="panel-title">Constituent Feedback</div>
+
+      <div class="fb-row">
+        <div class="fb-top">
+          <span class="fb-title">Road damage &mdash; Faskari route</span>
+          <span class="badge" style="color:#633806;background:#FAEEDA;">Under Review</span>
+        </div>
+        <div class="fb-meta">Faskari LGA &nbsp;&middot;&nbsp; Apr 22, 2026</div>
+      </div>
+
+      <div class="fb-row">
+        <div class="fb-top">
+          <span class="fb-title">School renovation &mdash; Bakori</span>
+          <span class="badge" style="color:#fff;background:var(--red);">Escalated</span>
+        </div>
+        <div class="fb-meta">Bakori LGA &nbsp;&middot;&nbsp; Apr 18, 2026</div>
+      </div>
+
+      <div class="fb-row">
+        <div class="fb-top">
+          <span class="fb-title">Borehole request &mdash; Matazu</span>
+          <span class="badge" style="color:var(--ge);background:#E8F5EE;">Resolved</span>
+        </div>
+        <div class="fb-meta">Matazu LGA &nbsp;&middot;&nbsp; Apr 10, 2026</div>
+      </div>
+
+      <a class="panel-link">View All Feedback &#8594;</a>
+    </div>
+
+    <!-- PANEL 3: Transparency Tools -->
+    <div class="panel" style="border-left:4px solid var(--gl); margin-top:16px;">
+      <div class="panel-title">Transparency Tools</div>
+      <button class="export-btn export-dark">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Full Report (PDF)
+      </button>
+      <button class="export-btn export-outline">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        View Data Archive
+      </button>
+      <div class="export-note">Last updated: April 26, 2026</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.querySelector('.mobile-filter-toggle')?.addEventListener('click', () => {
+    document.querySelector('.filters')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  /* ── Active filter pills — click X to remove ── */
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => pill.remove());
+  });
+
+  /* ── Pagination active state ── */
+  document.querySelectorAll('.pag-btn').forEach(btn => {
+    if (btn.classList.contains('nav-pag')) return;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pag-btn').forEach(b => {
+        b.classList.remove('on');
+        b.removeAttribute('aria-current');
+      });
+      btn.classList.add('on');
+      btn.setAttribute('aria-current', 'page');
+    });
+  });
+
+  /* ── Live search filtering ── */
+  const searchInput = document.getElementById('search-input');
+  const allCards    = document.querySelectorAll('.col-left article[data-name]');
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    allCards.forEach(card => {
+      const matches = !q || card.dataset.name.includes(q);
+      card.style.display = matches ? '' : 'none';
+    });
+  });
+
+  /* ── Filter selects update pills bar ── */
+  const pillsBar = document.getElementById('pills-bar');
+  ['filter-lga', 'filter-sector', 'filter-status'].forEach(id => {
+    document.getElementById(id).addEventListener('change', function () {
+      if (!this.value) return;
+      const label = this.value;
+      const exists = [...pillsBar.querySelectorAll('.filter-pill')].some(p => p.dataset.pill === label);
+      if (!exists) {
+        const pill = document.createElement('div');
+        pill.className = 'filter-pill';
+        pill.dataset.pill = label;
+        pill.innerHTML = `${label} <span class="filter-pill-x">&times;</span>`;
+        pill.addEventListener('click', () => pill.remove());
+        pillsBar.appendChild(pill);
+      }
+    });
+  });
+</script>
+</body>
+</html>
